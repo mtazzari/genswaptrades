@@ -42,4 +42,4 @@ jobs:
           autopep8 --diff --exit-code --recursive --max-line-length ${{ env.max_line_length }} --ignore E402 .
 
       - name: Run mypy
-        run: mypy --install-types genswaptrades && mypy genswaptrades
+        run: mypy --install-types --non-interactive genswaptrades && mypy genswaptrades
