@@ -27,4 +27,5 @@ jobs:
           pip install setuptools --upgrade
           pip install .[test]
       - name: Run unit tests
-        run: pytest -v
+        working-directory: genswaptrades/
+        run: pytest -v tests/tests.py
