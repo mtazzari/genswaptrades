@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 # todo add logging.
+# todo add docs on linear system of equation
 
 
 def generate_trades(fname: str,
@@ -23,7 +24,7 @@ def generate_trades(fname: str,
 
     If 2 trades are necessary to achieve the zero-sum, the two rates used are
     0.1 and 0.05 by default, or the two floats in `additional_trade_rates` if it is passed in input.
-    The notional and 
+
     Args:
         fname (str): Filename containing the trades.
         min_rate (float, optional): minimum allowed trade rate. Defaults to -0.1.
