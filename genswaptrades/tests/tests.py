@@ -5,6 +5,7 @@
 #
 import os
 import tempfile
+from typing import Dict
 
 import numpy as np
 import pytest
@@ -13,7 +14,7 @@ from pandas.errors import EmptyDataError
 from genswaptrades.tests import TEST_ASSETS_DIR
 from genswaptrades.trades import format_trades, generate_trades
 
-provided_tests_expected_results: dict[str, dict] = {
+provided_tests_expected_results: Dict[str, dict] = {
     "trades1.csv": {
         'api': [(3, -545891.29, 0.04889299, -26690.26)],
         'txt': "Trade 3        -545891.29   0.04889299        -26690.26",
