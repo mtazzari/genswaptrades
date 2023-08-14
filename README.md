@@ -9,7 +9,8 @@ This repository contains:
 
  - the code implementing the command-line utility;
  - documentation in the form of this README.md file;
- - unit tests quality assurance checks in the form of GitHub Actions workflows (see [here](https://github.com/mtazzari/genswaptrades/blob/main/.github/workflows)).
+ - several unit tests to cover expected results and edge cases handling;
+ - quality assurance checks in the form of GitHub Actions workflows (see [here](https://github.com/mtazzari/genswaptrades/blob/main/.github/workflows)).
 
 ## Comment on the algorithm
 Regarding the algorithm that I implemented to generate the 1 or 2 trades needed to achieve zero-sum notional value and cashflow. After reading the trades from file:
@@ -54,9 +55,9 @@ pip install .
 `genswaptrades` works in Python >= 3.7.
 
 ## Basic usage
-Once installed, the Python command line utility `genswaptrades` can be called in the shell:
+Once installed, the Python command line utility `genswaptrades` can be called in the shell, as required:
 ```bash
-genswaptrades
+genswaptrades <filename>
 ```
 The interface of the command line utility can be inspected with:
 ```bash
@@ -89,7 +90,6 @@ options:
                         Note: `--log-level` has no effect if `--debug` is passed. Default: False
   -V, --version         show program's version number and exit
 ```
-The filename `fname` is required for execution. 
 
 
 ## Usage
@@ -121,7 +121,8 @@ Trade 6          26483.00   0.08000000          2118.64
 ```
 The output is just the list of new trade(s), with no header, as required.
 
-By changing the log level, the user can obtain more informative output. By using `--log-level` argument, we can adjust the log level. Default is `WARNING` (30). By setting it to `INFO` (20), one gets:
+### Adjust output verbosity
+By using the `--log-level` argument, the user can obtain more or less extensive output. By default the log level is `WARNING` (30), i.e. to output all log messages with a `WARNING` severity or more. By setting it to `INFO` (20), one gets:
 ```bash
 $ genswaptrades /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv --log-level=20
 2023-08-14 10:44:13,647 - genswaptrades.trades - INFO - Starting the trade generation for input file /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv: 4 trades found.
