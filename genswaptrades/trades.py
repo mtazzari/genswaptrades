@@ -40,6 +40,9 @@ def generate_trades(fname: str,
     if not additional_trade_rates:
         # set additional_trade_rates dynamically (avoid mutable default argument value)
         additional_trade_rates = [max_rate, max_rate - 0.1 * (max_rate - min_rate)]
+    else:
+        assert additional_trade_rates[0] != additional_trade_rates[1], f"Expect different trade rates, got {additional_trade_rates}"
+        assert all(additional_trade_rates) != 0, f"Expect non-zero trade rates, got {additional_trade_rates}"
 
     # check that the additional_trade_rates are within [min_rate, max_rate] interval
     for rate in additional_trade_rates:
