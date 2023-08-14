@@ -4,7 +4,7 @@
 # trades functionality
 #
 import logging
-from os import PathLike
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -12,11 +12,11 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
-def generate_trades(fname: str | PathLike[str],
+def generate_trades(fname: str,
                     min_rate: float = -0.1,
                     max_rate: float = 0.1,
-                    additional_trade_rates: list[float] | None = None
-                    ) -> list[tuple[int, float, float, float]]:
+                    additional_trade_rates: List[float] | None = None
+                    ) -> List[Tuple[int, float, float, float]]:
     """Generate interest rate swap trades to achieve zero-sum notional value and cashflow.
 
     Note
@@ -35,8 +35,8 @@ def generate_trades(fname: str | PathLike[str],
             If None, they default to [max_rate, max_rate - 0.1 * (max_rate - min_rate)]. They must be different and can take any float value within [min_rate, max_rate].
 
     Returns:
-        list[tuple[int, float, float, float]]: list of tuples with all the generated trades,
-          one tuple (trade no., notional, rate, cashflow) for each trade.
+        List[Tuple[int, float, float, float]]: list of tuples with all the generated trades,
+          one Tuple (trade no., notional, rate, cashflow) for each trade.
     """
     if not additional_trade_rates:
         # set additional_trade_rates dynamically (avoid mutable default argument value)
@@ -131,25 +131,25 @@ def generate_trades(fname: str | PathLike[str],
     return new_trades
 
 
-def format_trades(trades: list[tuple[int, float, float, float]]) -> str:
+def format_trades(trades: List[Tuple[int, float, float, float]]) -> str:
     """Format the generated trades with the desired formatting.
 
     Output format is one line per trade:
       `Trade <trade no>  <notional>  <rate>  <cashflow>
 
     Args:
-        trades (list[tuple[int, float, float, float]]): list of tuples with all the generated trades,
-          one tuple (trade no., notional, rate, cashflow) for each trade.
+        trades (List[Tuple[int, float, float, float]]): list of tuples with all the generated trades,
+          one Tuple (trade no., notional, rate, cashflow) for each trade.
     """
     return "\n".join(["Trade {}   {:15.2f}  {:11.8f}  {:15.2f}".format(*trade) for trade in trades])
 
 
-def print_trades(trades: list[tuple[int, float, float, float]]) -> None:
+def print_trades(trades: List[Tuple[int, float, float, float]]) -> None:
     """Print the text-formatted generated trades.
 
     Args:
-        trades (list[tuple[int, float, float, float]]): list of tuples with all the generated trades,
-          one tuple (trade no., notional, rate, cashflow) for each trade.
+        trades (List[Tuple[int, float, float, float]]): list of tuples with all the generated trades,
+          one Tuple (trade no., notional, rate, cashflow) for each trade.
     """
     if trades:
         print(format_trades(trades))
