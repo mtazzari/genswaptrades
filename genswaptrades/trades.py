@@ -49,6 +49,10 @@ def generate_trades(fname: str,
         assert min_rate <= rate <= max_rate, \
             f"Expect additional_trade_rate to be in [{min_rate},{max_rate}], got {rate}."
 
+    # round the input min_rate, max_rate values to 8 digits
+    min_rate = np.round(min_rate, 8)
+    max_rate = np.round(max_rate, 8)
+
     # read trades and compute total notional and cashflow, after rounding them.
     df = pd.read_csv(fname)
     df['cashflow'] = df['notional'] * df['rate']
@@ -57,16 +61,26 @@ def generate_trades(fname: str,
     cashflow_rounded_sum = np.round(df['cashflow_rounded'].sum(), 2)
     Ntrades = len(df)
 
+    # exit if both notional and cashflow are already 0.00
+    if notional_rounded_sum == 0. and cashflow_rounded_sum == 0.:
+        logging.info("notional and cashflow are already 0.00. No new trades are necessary.")
+        return []
+
     new_trades = []
 
     logger.info(f"Starting the trade generation for input file {fname}: {Ntrades} trades found.")
     logger.info(f"Initial notional_sum={notional_rounded_sum} and cashflow_sum={cashflow_rounded_sum}.")
 
     # compute the rate for the next trade to achieve zero-sum notional and cashflow.
-    next_trade_rate = cashflow_rounded_sum / notional_rounded_sum
-    logger.info(f"The rate of a single trade needed to achieve zero-sum is {next_trade_rate:11.8f}")
+    if notional_rounded_sum != 0:
+        next_trade_rate = cashflow_rounded_sum / notional_rounded_sum
+        next_trade_rounded_rate = np.round(cashflow_rounded_sum / notional_rounded_sum, 8)
+        logger.info(f"The rate of a single trade needed to achieve zero-sum is {next_trade_rate:11.8f}")
+    else:
+        next_trade_rate = next_trade_rounded_rate = np.inf
+        logger.info("Notional sum is already 0.00. Two trades are necessary.")
 
-    if next_trade_rate < min_rate or next_trade_rate > max_rate:
+    if next_trade_rounded_rate < min_rate or next_trade_rounded_rate > max_rate:
         # more than 1 trade is necessary, ensure that we can make it in 2 trades
         logger.info(f"The single-trade rate is outside of [{min_rate:11.8f}, {max_rate:11.8f}] interval: 2 trades are necessary.")
 
@@ -116,16 +130,25 @@ def generate_trades(fname: str,
     return new_trades
 
 
-def print_trades(trades: list[tuple[int, float, float, float]]) -> None:
-    """Print the generated trades with the desired formatting.
+def format_trades(trades: list[tuple[int, float, float, float]]) -> None:
+    """Format the generated trades with the desired formatting.
 
-    Format is one line per trade:
+    Output format is one line per trade:
       `Trade <trade no>  <notional>  <rate>  <cashflow>
 
     Args:
         trades (list[tuple[int, float, float, float]]): list of tuples with all the generated trades,
           one tuple (trade no., notional, rate, cashflow) for each trade.
     """
-    print("\n".join(
-        ["Trade {}   {:15.2f}  {:11.8f}  {:15.2f}".format(*trade) for trade in trades]
-    ))
+    return "\n".join(["Trade {}   {:15.2f}  {:11.8f}  {:15.2f}".format(*trade) for trade in trades])
+
+
+def print_trades(trades: list[tuple[int, float, float, float]]) -> None:
+    """Print the text-formatted generated trades.
+
+    Args:
+        trades (list[tuple[int, float, float, float]]): list of tuples with all the generated trades,
+          one tuple (trade no., notional, rate, cashflow) for each trade.
+    """
+    if trades:
+        print(format_trades(trades))
