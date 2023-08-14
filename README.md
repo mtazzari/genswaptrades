@@ -83,7 +83,10 @@ options:
                         Example: `--rates 0.3 0.1`.
                         Default: None, which is equivalent to using rates [max_rate, max_rate - 0.1 * (max_rate - min_rate)]
   --log-level LOG_LEVEL
-                        log level (debug:10, info:20, warning:30, error:40, critical:50). Default: 30
+                        [int] log level (debug:10, info:20, warning:30, error:40, critical:50). Default: 30
+                        Note: `--log-level` has no effect if `--debug` is passed
+  -d, --debug           [bool] if True, log level is set to debug: 10. Equivalent to `--log-level=10`.
+                        Note: `--log-level` has no effect if `--debug` is passed. Default: False
   -V, --version         show program's version number and exit
 ```
 The filename `fname` is required for execution. 
@@ -93,12 +96,20 @@ The filename `fname` is required for execution.
 After installing `genswaptrades`, to quickly run the tool on the 3 test cases provided with the problem (i.e., trades1.csv, trades2.csv, trades3.csv), use the `--run-tests` argument:
 ```bash
 $ genswaptrades --run-tests
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades1.csv
+Trade 3        -545891.29   0.04889299        -26690.26
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades2.csv
+Trade 6        3950072.95   0.00134147          5298.91
 /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv
 Trade 5         -26409.60   0.10000000         -2640.96
 Trade 6          26483.00   0.08000000          2118.64
-/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades2.csv
-Trade 6        3950072.95   0.00134147          5298.91
-/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades1.csv
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades4.csv
+Trade 6          10073.40   0.03970854           400.00
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades5.csv
+Trade 7          -9926.60  -0.03828098           380.00
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades6.csv
+Trade 8        -691280.10   0.10000000        -69128.01
+Trade 9         663341.50   0.08000000         53067.32ssets/trades1.csv
 Trade 3        -545891.29   0.04889299        -26690.26
 ```
 
@@ -113,16 +124,58 @@ The output is just the list of new trade(s), with no header, as required.
 By changing the log level, the user can obtain more informative output. By using `--log-level` argument, we can adjust the log level. Default is `WARNING` (30). By setting it to `INFO` (20), one gets:
 ```bash
 $ genswaptrades /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv --log-level=20
-2023-08-14 01:05:16,440 - genswaptrades.trades - INFO - Starting the trade generation for input file /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv: 4 trades found.
-2023-08-14 01:05:16,440 - genswaptrades.trades - INFO - Initial notional_sum=-73.4 and cashflow_sum=522.32.
-2023-08-14 01:05:16,440 - genswaptrades.trades - INFO - The rate of a single trade needed to achieve zero-sum is -7.11607629
-2023-08-14 01:05:16,440 - genswaptrades.trades - INFO - The single-trade rate is outside of [-0.10000000,  0.10000000] interval: 2 trades are necessary.
-2023-08-14 01:05:16,440 - genswaptrades.trades - INFO - Final notional_sum and cashflow_sum are expected to be both zero (i.e. < 0.01), got notional_sum=0.00            and cashflow_sum=0.00
-2023-08-14 01:05:16,440 - genswaptrades.trades - INFO - Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>
+2023-08-14 10:44:13,647 - genswaptrades.trades - INFO - Starting the trade generation for input file /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv: 4 trades found.
+2023-08-14 10:44:13,647 - genswaptrades.trades - INFO - Initial notional_sum=-73.4 and cashflow_sum=522.32.
+2023-08-14 10:44:13,647 - genswaptrades.trades - INFO - The rate of a single trade needed to achieve zero-sum is -7.11607629
+2023-08-14 10:44:13,647 - genswaptrades.trades - INFO - The single-trade rate is outside of [-0.10000000,  0.10000000] interval: 2 trades are necessary.
+2023-08-14 10:44:13,648 - genswaptrades.trades - INFO - Final notional_sum and cashflow_sum are expected to be both zero (i.e. < 0.01), got notional_sum=0.00            and cashflow_sum=0.00
+2023-08-14 10:44:13,648 - genswaptrades.trades - INFO - Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>
 Trade 5         -26409.60   0.10000000         -2640.96
 Trade 6          26483.00   0.08000000          2118.64
 ```
-The log level can be further lowered to `DEBUG` with  `--log-level 10`.
+The log level can be further lowered to `DEBUG` with  `--log-level 10` or, more simply, with `--debug`, which overrides any `--log-level` value:
+
+```bash
+$ genswaptrades --run-tests --debug
+2023-08-14 10:42:43,694 - root - DEBUG - command-line arguments: {'filename': '', 'run_tests': True, 'min_rate': -0.1, 'max_rate': 0.1, 'rates': None, 'log_level': 30, 'debug': True}
+2023-08-14 10:42:43,694 - root - INFO - The following test files were found:
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades1.csv
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades2.csv
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades4.csv
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades5.csv
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades6.csv
+
+2023-08-14 10:42:43,694 - root - INFO - Starting the trade generation:
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades1.csv
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - Starting the trade generation for input file /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades1.csv: 2 trades found.
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - Initial notional_sum=545891.29 and cashflow_sum=26690.26.
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - The rate of a single trade needed to achieve zero-sum is  0.04889299
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - The single-trade rate is within of [min_rate, max_rate] interval: 1 trade is sufficient.
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - Number of generated trades: 1
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - Final notional_sum and cashflow_sum are expected to be both zero (i.e. < 0.01), got notional_sum=0.00            and cashflow_sum=0.00
+2023-08-14 10:42:43,698 - genswaptrades.trades - INFO - Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>
+Trade 3        -545891.29   0.04889299        -26690.26
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades2.csv
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - Starting the trade generation for input file /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades2.csv: 5 trades found.
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - Initial notional_sum=-3950072.95 and cashflow_sum=-5298.91.
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - The rate of a single trade needed to achieve zero-sum is  0.00134147
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - The single-trade rate is within of [min_rate, max_rate] interval: 1 trade is sufficient.
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - Number of generated trades: 1
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - Final notional_sum and cashflow_sum are expected to be both zero (i.e. < 0.01), got notional_sum=0.00            and cashflow_sum=0.00
+2023-08-14 10:42:43,701 - genswaptrades.trades - INFO - Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>
+Trade 6        3950072.95   0.00134147          5298.91
+/Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv
+2023-08-14 10:42:43,703 - genswaptrades.trades - INFO - Starting the trade generation for input file /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades3.csv: 4 trades found.
+2023-08-14 10:42:43,703 - genswaptrades.trades - INFO - Initial notional_sum=-73.4 and cashflow_sum=522.32.
+2023-08-14 10:42:43,703 - genswaptrades.trades - INFO - The rate of a single trade needed to achieve zero-sum is -7.11607629
+2023-08-14 10:42:43,703 - genswaptrades.trades - INFO - The single-trade rate is outside of [-0.10000000,  0.10000000] interval: 2 trades are necessary.
+2023-08-14 10:42:43,704 - genswaptrades.trades - INFO - Final notional_sum and cashflow_sum are expected to be both zero (i.e. < 0.01), got notional_sum=0.00            and cashflow_sum=0.00
+2023-08-14 10:42:43,704 - genswaptrades.trades - INFO - Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>
+Trade 5         -26409.60   0.10000000         -2640.96
+Trade 6          26483.00   0.08000000          2118.64
+[...]
+```
 
 > **Note** :point_right: The calculations and the outputs adopt the rounding specified in the test: notional and cashflow are rounded to 2 decimal digits, the rate to 8 decimal digits.
 
