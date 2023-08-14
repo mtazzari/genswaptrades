@@ -23,7 +23,8 @@ def parse_args() -> dict:
         dict: the parsed arguments.
     """
     parser = argparse.ArgumentParser(
-        description="A Python command-line utility that, for a given list of trades, generates the 1 or 2 interest rate swap trades\nneeded to achieve zero-sum notional value and cashflow.",
+        description="A Python command-line utility that, for a given list of trades, generates the 1 or 2 interest rate swap trades\n"
+                    "needed to achieve zero-sum notional value and cashflow.",
         usage='use "%(prog)s --help" for more information',
         formatter_class=argparse.RawTextHelpFormatter  # for multi-line help text
     )

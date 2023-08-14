@@ -4,7 +4,7 @@
 # genswaptrades tests
 #
 import os
-from io import StringIO
+import tempfile
 
 import numpy as np
 import pytest
@@ -13,7 +13,7 @@ from pandas.errors import EmptyDataError
 from genswaptrades.tests import TEST_ASSETS_DIR
 from genswaptrades.trades import format_trades, generate_trades
 
-provided_tests_expected_results = {
+provided_tests_expected_results: dict[str, dict] = {
     "trades1.csv": {
         'api': [(3, -545891.29, 0.04889299, -26690.26)],
         'txt': "Trade 3        -545891.29   0.04889299        -26690.26",
@@ -152,9 +152,9 @@ def test_zero_additional_rates() -> None:
 def test_empty_trades_file() -> None:
     """Test that a pandas EmptyDataError is raised if user provides an empty file.
     """
-
-    with pytest.raises(EmptyDataError):
-        generate_trades(StringIO(""))
+    with tempfile.NamedTemporaryFile(suffix='.csv') as temp:
+        with pytest.raises(EmptyDataError):
+            generate_trades(temp.name)
 
 
 def test_rounding() -> None:

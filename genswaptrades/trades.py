@@ -4,6 +4,7 @@
 # trades functionality
 #
 import logging
+from os import PathLike
 
 import numpy as np
 import pandas as pd
@@ -11,7 +12,7 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
-def generate_trades(fname: str,
+def generate_trades(fname: str | PathLike[str],
                     min_rate: float = -0.1,
                     max_rate: float = 0.1,
                     additional_trade_rates: list[float] | None = None
@@ -28,9 +29,9 @@ def generate_trades(fname: str,
 
     Args:
         fname (str): Filename containing the trades.
-        min_rate (float, optional): minimum allowed trade rate. Defaults to -0.1.
-        max_rate (float, optional): maximum allowed trade rate. Defaults to 0.1.
-        additional_trade_rates (list[float], optional): if 2 trades are necessary to achieve zero-sum, the rates of these two trades. Defaults to None.
+        min_rate (float, optional): minimum allowed trade rate. Default: -0.1.
+        max_rate (float, optional): maximum allowed trade rate. Default: 0.1.
+        additional_trade_rates (list[float], optional): if 2 trades are necessary to achieve zero-sum, the rates of these two trades. Default: None.
             If None, they default to [max_rate, max_rate - 0.1 * (max_rate - min_rate)]. They must be different and can take any float value within [min_rate, max_rate].
 
     Returns:
@@ -130,7 +131,7 @@ def generate_trades(fname: str,
     return new_trades
 
 
-def format_trades(trades: list[tuple[int, float, float, float]]) -> None:
+def format_trades(trades: list[tuple[int, float, float, float]]) -> str:
     """Format the generated trades with the desired formatting.
 
     Output format is one line per trade:
