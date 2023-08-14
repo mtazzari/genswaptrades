@@ -16,17 +16,18 @@ from genswaptrades.trades import format_trades, generate_trades
 provided_tests_expected_results = {
     "trades1.csv": {
         'api': [(3, -545891.29, 0.04889299, -26690.26)],
-        'txt': "Trade 3        -545891.29   0.04889299        -26690.26"
-
+        'txt': "Trade 3        -545891.29   0.04889299        -26690.26",
+        'comment': 'TEST PROVIDED BY PROBLEM: trades1.csv'
     },
     "trades2.csv": {
         'api': [(6, 3950072.95, 0.00134147, 5298.91)],
-        'txt': "Trade 6        3950072.95   0.00134147          5298.91"
+        'txt': "Trade 6        3950072.95   0.00134147          5298.91",
+        'comment': 'TEST PROVIDED BY PROBLEM: trades2.csv'
     },
     "trades3.csv": {
         'api': [(5, -26409.6, 0.1, -2640.96), (6, 26483.0, 0.08, 2118.64)],
         'txt': "Trade 5         -26409.60   0.10000000         -2640.96\nTrade 6          26483.00   0.08000000          2118.64",
-        'comment': 'notional sum < 0 cashflows sum > 0'
+        'comment': 'TEST PROVIDED BY PROBLEM: trades3.csv; notional sum < 0 cashflows sum > 0'
     },
     "trades4.csv": {
         'api': [(6, 10073.4, 0.03970854, 400.0)],
@@ -62,16 +63,9 @@ provided_tests_expected_results = {
 
 
 @pytest.mark.parametrize("test_input_fname,expected_results",
-                         [("trades1.csv", provided_tests_expected_results["trades1.csv"]),
-                          ("trades2.csv", provided_tests_expected_results["trades2.csv"]),
-                          ("trades3.csv", provided_tests_expected_results["trades3.csv"]),
-                          ("trades4.csv", provided_tests_expected_results["trades4.csv"]),
-                          ("trades5.csv", provided_tests_expected_results["trades5.csv"]),
-                          ("trades6.csv", provided_tests_expected_results["trades6.csv"]),
-                          ("trades7.csv", provided_tests_expected_results["trades7.csv"]),
-                          ("trades8.csv", provided_tests_expected_results["trades8.csv"]),
-                          ("trades9.csv", provided_tests_expected_results["trades9.csv"])
-                          ])
+                         [(fname, data) for (fname, data) in provided_tests_expected_results.items()],
+                         ids=[data['comment'] for (_, data) in provided_tests_expected_results.items()]
+                         )
 def test_provided_test_cases(test_input_fname: str, expected_results: dict) -> None:
     """Test that the output (both via API and as console output) matches the expected results, for the provided test cases.
 
