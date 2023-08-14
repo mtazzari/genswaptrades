@@ -30,7 +30,7 @@ def parse_args() -> dict:
     )
     parser.add_argument("filename",
                         action="store",
-                        help="[str] path to csv file containing the trades (columns: notional, rate).\n",
+                        help="[str] path to CSV file containing the trades (columns: notional, rate). Example: `trades1.txt` or `trades1.csv`\n",
                         type=str,
                         nargs="?",  # make the positional argument optional
                         default="")
@@ -80,8 +80,8 @@ def validate_args(args: dict) -> None:
     """
     filename, ext = os.path.splitext(args['filename'])
 
-    if filename and ext.upper() != '.CSV':
-        raise ValueError(f"Expecting the filename with 'CSV' or 'csv' extension, got '{ext}'.")
+    if filename and ext.upper() not in ['.CSV', '.TXT']:
+        raise ValueError(f"Expecting the filename with 'txt' or 'csv' extension, got '{ext}'.")
 
 
 def main() -> None:
@@ -104,7 +104,7 @@ def main() -> None:
     # run the trade generator
     root_logger.debug("command-line arguments: {}".format(args))
     if args['run_tests']:
-        test_files = sorted(glob(os.path.join(TEST_ASSETS_DIR, "trades*.csv")))
+        test_files = sorted(glob(os.path.join(TEST_ASSETS_DIR, "trades*.txt")))
         root_logger.info("The following test files were found:\n{}\n".format("\n".join(test_files)))
         root_logger.info("Starting the trade generation:")
         for test_file in test_files:
