@@ -51,8 +51,13 @@ def parse_args() -> dict:
                              "Example: `--rates 0.3 0.1`.\n"
                              "Default: None, which is equivalent to using rates [max_rate, max_rate - 0.1 * (max_rate - min_rate)]")
     parser.add_argument('--log-level',
-                        help='log level (debug:10, info:20, warning:30, error:40, critical:50). Default: 30',
+                        help='[int] log level (debug:10, info:20, warning:30, error:40, critical:50). Default: 30\n'
+                             "Note: `--log-level` has no effect if `--debug` is passed",
                         default=30, type=int)
+    parser.add_argument("-d", "--debug", action="store_true",
+                        help="[bool] if True, log level is set to debug: 10. Equivalent to `--log-level=10`.\n"
+                             "Note: `--log-level` has no effect if `--debug` is passed. Default: False",
+                        default=False)
     parser.add_argument("-V", "--version",
                         action="version",
                         version='{}'.format(__version__)
@@ -92,13 +97,13 @@ def main() -> None:
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     root_logger.addHandler(ch)
-    logging_level = args.pop('log_level')
+    logging_level = args.pop('log_level') if not args['debug'] else 10
     root_logger.setLevel(logging_level)
 
     # run the trade generator
     root_logger.debug("command-line arguments: {}".format(args))
     if args['run_tests']:
-        test_files = glob(os.path.join(TEST_ASSETS_DIR, "trades*.csv"))
+        test_files = sorted(glob(os.path.join(TEST_ASSETS_DIR, "trades*.csv")))
         root_logger.info("The following test files were found:\n{}\n".format("\n".join(test_files)))
         root_logger.info("Starting the trade generation:")
         for test_file in test_files:
