@@ -108,7 +108,7 @@ def generate_trades(fname: str,
 
     logger.info(
         f"Final notional_sum and cashflow_sum are expected to be both zero (i.e. < 0.01), got notional_sum={notional_rounded_sum:<15.2f} and cashflow_sum={cashflow_rounded_sum:<15.2f}")
-    logger.info(f"Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>")
+    logger.info("Output columns, 1 row for each trade: Trade <trade no.>  <notional value>  <rate>  <cashflow>")
 
     return new_trades
 
