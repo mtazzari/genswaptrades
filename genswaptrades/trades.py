@@ -4,7 +4,7 @@
 # trades functionality
 #
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def generate_trades(fname: str,
                     min_rate: float = -0.1,
                     max_rate: float = 0.1,
-                    additional_trade_rates: List[float] | None = None
+                    additional_trade_rates: Union[List[float], None] = None
                     ) -> List[Tuple[int, float, float, float]]:
     """Generate interest rate swap trades to achieve zero-sum notional value and cashflow.
 
