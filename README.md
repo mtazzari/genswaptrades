@@ -109,8 +109,9 @@ Trade 6          10073.40   0.03970854           400.00
 Trade 7          -9926.60  -0.03828098           380.00
 /Users/mtazzari/repos/genswaptrades/genswaptrades/tests/assets/trades6.txt
 Trade 8        -691280.10   0.10000000        -69128.01
-Trade 9         663341.50   0.08000000         53067.32ssets/trades1.txt
+Trade 9         663341.50   0.08000000         53067.32
 Trade 3        -545891.29   0.04889299        -26690.26
+[...]
 ```
 
 To run `genswaptrades` as per the test requirement, i.e. as  `genswaptrades <filename>`, just do: 
